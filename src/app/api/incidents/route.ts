@@ -4,6 +4,7 @@ import { getSession } from '@/lib/security/session'
 import { createAuditLog } from '@/lib/security/audit'
 import { incidentSchema } from '@/lib/validations'
 import { generateCaseNumber } from '@/lib/utils'
+import { invalidateCache } from '@/lib/cache'
 import { AuditAction } from '@prisma/client'
 
 export async function GET(request: NextRequest) {
@@ -85,6 +86,8 @@ export async function POST(request: NextRequest) {
       ipAddress,
       userAgent,
     })
+
+    invalidateCache('dashboard')
 
     return NextResponse.json({ id: incident.id, caseNumber: incident.caseNumber }, { status: 201 })
   } catch (error) {

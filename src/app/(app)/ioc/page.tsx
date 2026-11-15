@@ -1,5 +1,6 @@
 import { getSession } from '@/lib/security/session'
 import { prisma } from '@/lib/db'
+import { getOrSetCache } from '@/lib/cache'
 import { Topbar } from '@/components/layout/topbar'
 import { getSeverityColor, formatDate } from '@/lib/utils'
 import Link from 'next/link'
@@ -11,13 +12,15 @@ export default async function IOCTrackerPage() {
 
   let iocs: any[] = []
   try {
-    iocs = await prisma.iOC.findMany({
-      include: {
-        case: {
-          select: { id: true, caseNumber: true, title: true, tlp: true },
+    iocs = await getOrSetCache('iocs:all', 20000, async () => {
+      return prisma.iOC.findMany({
+        include: {
+          case: {
+            select: { id: true, caseNumber: true, title: true, tlp: true },
+          },
         },
-      },
-      orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: 'desc' },
+      })
     })
   } catch (e) {
     console.error('Failed to query IOCs:', e)

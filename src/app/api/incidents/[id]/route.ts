@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db'
 import { getSession } from '@/lib/security/session'
 import { createAuditLog } from '@/lib/security/audit'
 import { updateStatusSchema } from '@/lib/validations'
+import { invalidateCache } from '@/lib/cache'
 import { AuditAction } from '@prisma/client'
 
 export async function GET(
@@ -133,6 +134,8 @@ export async function PATCH(
       details: { from: existing.status, to: parsed.data.status },
       ipAddress,
     })
+
+    invalidateCache('dashboard')
 
     return NextResponse.json(updated)
   } catch (error) {

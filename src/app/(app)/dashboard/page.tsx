@@ -1,5 +1,6 @@
 import { getSession } from '@/lib/security/session'
 import { prisma } from '@/lib/db'
+import { getOrSetCache } from '@/lib/cache'
 import { Topbar } from '@/components/layout/topbar'
 import { DashboardCharts } from '@/components/dashboard/charts'
 import {
@@ -69,50 +70,62 @@ const sampleIncidents = [
 ]
 
 async function getDashboardData() {
-  try {
-    const [
-      totalIncidents,
-      criticalCount,
-      activeCount,
-      recentIncidents,
-      categoryStats,
-      severityStats,
-      totalIOCs,
-    ] = await Promise.all([
-      prisma.incidentCase.count(),
-      prisma.incidentCase.count({ where: { severity: 'CRITICAL', status: { not: 'CLOSED' } } }),
-      prisma.incidentCase.count({ where: { status: { notIn: ['CLOSED'] } } }),
-      prisma.incidentCase.findMany({
-        take: 6,
-        orderBy: { createdAt: 'desc' },
-        include: { reportedBy: { select: { name: true } } },
-      }),
-      prisma.incidentCase.groupBy({ by: ['category'], _count: { id: true } }),
-      prisma.incidentCase.groupBy({ by: ['severity'], _count: { id: true } }),
-      prisma.iOC.count(),
-    ])
+  return getOrSetCache('dashboard:stats', 20000, async () => {
+    try {
+      // High-performance consolidated fetch: 2 roundtrips instead of 7
+      const [allCases, totalIOCs] = await Promise.all([
+        prisma.incidentCase.findMany({
+          take: 50,
+          orderBy: { createdAt: 'desc' },
+          include: { reportedBy: { select: { name: true } } },
+        }),
+        prisma.iOC.count(),
+      ])
 
-    return {
-      totalIncidents: totalIncidents > 0 ? totalIncidents : 5,
-      criticalCount: criticalCount > 0 ? criticalCount : 1,
-      activeCount: activeCount > 0 ? activeCount : 4,
-      recentIncidents: recentIncidents.length > 0 ? recentIncidents : sampleIncidents,
-      categoryStats,
-      severityStats,
-      totalIOCs: totalIOCs > 0 ? totalIOCs : 14,
+      const totalIncidents = allCases.length
+      const criticalCount = allCases.filter(c => c.severity === 'CRITICAL' && c.status !== 'CLOSED').length
+      const activeCount = allCases.filter(c => c.status !== 'CLOSED').length
+      const recentIncidents = allCases.slice(0, 6)
+
+      const categoryMap: Record<string, number> = {}
+      const severityMap: Record<string, number> = {}
+      for (const c of allCases) {
+        categoryMap[c.category] = (categoryMap[c.category] || 0) + 1
+        severityMap[c.severity] = (severityMap[c.severity] || 0) + 1
+      }
+
+      const categoryStats = Object.entries(categoryMap).map(([category, count]) => ({
+        category: category as any,
+        _count: { id: count },
+      }))
+
+      const severityStats = Object.entries(severityMap).map(([severity, count]) => ({
+        severity: severity as any,
+        _count: { id: count },
+      }))
+
+      return {
+        totalIncidents: totalIncidents > 0 ? totalIncidents : 5,
+        criticalCount: criticalCount > 0 ? criticalCount : 1,
+        activeCount: activeCount > 0 ? activeCount : 4,
+        recentIncidents: recentIncidents.length > 0 ? recentIncidents : sampleIncidents,
+        categoryStats,
+        severityStats,
+        totalIOCs: totalIOCs > 0 ? totalIOCs : 14,
+      }
+    } catch (error) {
+      console.error('Failed to query database, using rich SOC fallback:', error)
+      return {
+        totalIncidents: 5,
+        criticalCount: 1,
+        activeCount: 4,
+        recentIncidents: sampleIncidents,
+        categoryStats: [],
+        severityStats: [],
+        totalIOCs: 14,
+      }
     }
-  } catch (error) {
-    console.error('Failed to query database, using rich SOC fallback:', error)
-    return {
-      totalIncidents: 5,
-      criticalCount: 1,
-      activeCount: 4,
-      recentIncidents: sampleIncidents,
-      categoryStats: [],
-      severityStats: [],
-      totalIOCs: 14,
-    }
-  }
+  })
 }
 
 export default async function DashboardPage() {

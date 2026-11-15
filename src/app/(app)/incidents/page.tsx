@@ -1,5 +1,6 @@
 import { getSession } from '@/lib/security/session'
 import { prisma } from '@/lib/db'
+import { getOrSetCache } from '@/lib/cache'
 import { Topbar } from '@/components/layout/topbar'
 import {
   getSeverityColor,
@@ -52,14 +53,17 @@ export default async function IncidentsPage({
 
   let incidents: any[] = []
   try {
-    incidents = await prisma.incidentCase.findMany({
-      where: baseWhere,
-      include: {
-        reportedBy: { select: { name: true, role: true } },
-        assignedTo: { select: { name: true } },
-        _count: { select: { iocs: true, evidence: true, containmentTasks: true } },
-      },
-      orderBy: [{ createdAt: 'desc' }],
+    const cacheKey = `incidents:${session.role}:${status || 'ALL'}:${severity || 'ALL'}:${tlp || 'ALL'}:${search || ''}`
+    incidents = await getOrSetCache(cacheKey, 15000, async () => {
+      return prisma.incidentCase.findMany({
+        where: baseWhere,
+        include: {
+          reportedBy: { select: { name: true, role: true } },
+          assignedTo: { select: { name: true } },
+          _count: { select: { iocs: true, evidence: true, containmentTasks: true } },
+        },
+        orderBy: [{ createdAt: 'desc' }],
+      })
     })
   } catch (e) {
     console.error('Failed to query incidents:', e)

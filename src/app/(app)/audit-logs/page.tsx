@@ -1,5 +1,6 @@
 import { getSession } from '@/lib/security/session'
 import { prisma } from '@/lib/db'
+import { getOrSetCache } from '@/lib/cache'
 import { Topbar } from '@/components/layout/topbar'
 import { formatDate } from '@/lib/utils'
 import { Activity, ShieldAlert, CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
@@ -16,11 +17,14 @@ export default async function AuditLogsPage() {
 
   let logs: any[] = []
   try {
-    logs = await prisma.auditLog.findMany({
-      where,
-      include: { user: { select: { name: true, email: true, role: true } } },
-      orderBy: { timestamp: 'desc' },
-      take: 50,
+    const cacheKey = `audit-logs:${session.role}:${session.userId}`
+    logs = await getOrSetCache(cacheKey, 10000, async () => {
+      return prisma.auditLog.findMany({
+        where,
+        include: { user: { select: { name: true, email: true, role: true } } },
+        orderBy: { timestamp: 'desc' },
+        take: 50,
+      })
     })
   } catch (e) {
     console.error('Failed to query audit logs:', e)

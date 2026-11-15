@@ -1,5 +1,6 @@
 import { getSession } from '@/lib/security/session'
 import { prisma } from '@/lib/db'
+import { getOrSetCache } from '@/lib/cache'
 import { Topbar } from '@/components/layout/topbar'
 import { formatDate } from '@/lib/utils'
 import { Users, ShieldCheck, UserCheck, ShieldAlert, Key } from 'lucide-react'
@@ -10,11 +11,13 @@ export default async function TeamPage() {
 
   let users: any[] = []
   try {
-    users = await prisma.user.findMany({
-      include: {
-        _count: { select: { reportedIncidents: true, assignedIncidents: true } },
-      },
-      orderBy: { createdAt: 'asc' },
+    users = await getOrSetCache('users:all', 30000, async () => {
+      return prisma.user.findMany({
+        include: {
+          _count: { select: { reportedIncidents: true, assignedIncidents: true } },
+        },
+        orderBy: { createdAt: 'asc' },
+      })
     })
   } catch (e) {
     console.error('Failed to query users:', e)
