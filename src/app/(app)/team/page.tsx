@@ -25,17 +25,17 @@ export default async function TeamPage() {
 
   const roleBadges: Record<string, { label: string; color: string; icon: any }> = {
     COMMANDER: {
-      label: 'Incident Commander (Admin)',
+      label: 'Komandan Insiden Siber (Administrator)',
       color: 'bg-red-500/10 border-red-500/30 text-red-400',
       icon: ShieldAlert,
     },
     RESPONDER: {
-      label: 'Lead Forensic Investigator',
+      label: 'Petugas Respons & Forensik Insiden',
       color: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
       icon: ShieldCheck,
     },
     ANALYST: {
-      label: 'SOC Tier-1 Triage Analyst',
+      label: 'Analis Triage Keamanan Tingkat 1',
       color: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
       icon: UserCheck,
     },
@@ -44,8 +44,8 @@ export default async function TeamPage() {
   return (
     <div className="min-h-screen bg-[#08090d] text-slate-100 pb-16">
       <Topbar
-        title="Team & Access Control (RBAC)"
-        subtitle="Struktur Hak Akses Berdasarkan Peran & Kepatuhan Prinsip Least Privilege"
+        title="Struktur Tim & Hak Akses (RBAC)"
+        subtitle="Matriks Hak Akses Berdasarkan Peran & Kepatuhan Prinsip Least Privilege"
         user={session}
       />
 

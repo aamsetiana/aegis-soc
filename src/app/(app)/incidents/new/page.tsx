@@ -20,14 +20,21 @@ const severities = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
 const tlpOptions = ['RED', 'AMBER', 'GREEN', 'WHITE']
 
 const categoryLabels: Record<string, string> = {
-  PHISHING: 'Phishing Campaign',
-  MALWARE: 'Malware Infection',
-  RANSOMWARE: 'Ransomware Attack',
-  UNAUTHORIZED_ACCESS: 'Unauthorized Access / SSH Compromise',
-  DDOS: 'DDoS Volumetric Attack',
-  DATA_LEAK: 'Data Leak / Exfiltration',
-  INSIDER_THREAT: 'Insider Threat Activity',
-  OTHER: 'Other Security Incident',
+  PHISHING: 'Serangan Phishing / Email Tipuan',
+  MALWARE: 'Infeksi Malware / Trojan',
+  RANSOMWARE: 'Serangan Enkripsi Ransomware',
+  UNAUTHORIZED_ACCESS: 'Akses Tanpa Izin / Kompromi Akun',
+  DDOS: 'Serangan Penolakan Layanan (DDoS)',
+  DATA_LEAK: 'Kebocoran / Pencurian Data Sensitif',
+  INSIDER_THREAT: 'Ancaman Orang Dalam (Insider Threat)',
+  OTHER: 'Insiden Keamanan Siber Lainnya',
+}
+
+const severityLabels: Record<string, string> = {
+  CRITICAL: 'Kritis (Critical - Dampak Masif)',
+  HIGH: 'Tinggi (High - Sistem Utama Terganggu)',
+  MEDIUM: 'Sedang (Medium - Operasional Terbatas)',
+  LOW: 'Rendah (Low - Anomali Ringan)',
 }
 
 const tlpDesc: Record<string, string> = {
@@ -206,7 +213,7 @@ export default function NewIncidentPage() {
                 >
                   {severities.map((s) => (
                     <option key={s} value={s}>
-                      {s}
+                      {severityLabels[s] || s}
                     </option>
                   ))}
                 </select>

@@ -77,7 +77,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">Alamat Email</label>
               <input
                 type="email"
                 value={email}
@@ -89,7 +89,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">Kata Sandi</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -132,12 +132,12 @@ export default function LoginPage() {
 
         {/* Demo credentials */}
         <div className="mt-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 text-xs text-slate-500">
-          <p className="font-medium text-slate-400 mb-2">Demo Credentials:</p>
+          <p className="font-medium text-slate-400 mb-2">Akun Pengujian Demo (Database Neon):</p>
           <div className="space-y-1">
-            <p>🔴 Commander: commander@aegissoc.io</p>
-            <p>🟡 Responder: responder@aegissoc.io</p>
-            <p>🟢 Analyst: analyst@aegissoc.io</p>
-            <p className="mt-1">Password: PasswordAegis!2026</p>
+            <p>🔴 Komandan (Commander): commander@aegissoc.io</p>
+            <p>🟡 Petugas (Responder): responder@aegissoc.io</p>
+            <p>🟢 Analis (Analyst): analyst@aegissoc.io</p>
+            <p className="mt-1">Kata Sandi: PasswordAegis!2026</p>
           </div>
         </div>
       </div>

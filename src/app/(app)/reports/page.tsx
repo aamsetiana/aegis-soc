@@ -34,8 +34,8 @@ export default async function ReportsPage() {
   return (
     <div className="min-h-screen bg-[#08090d] text-slate-100 pb-16">
       <Topbar
-        title="Security Reports & Export Center"
-        subtitle="Ekspor Laporan Rekapitulasi Insiden Eksekutif (PDF) & Threat Intel Feed (CSV)"
+        title="Pusat Laporan & Ekspor Keamanan"
+        subtitle="Ekspor Laporan Rekapitulasi Insiden Eksekutif (PDF) & Feed Indikator Ancaman (CSV)"
         user={session}
       />
 

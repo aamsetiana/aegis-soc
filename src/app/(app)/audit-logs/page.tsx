@@ -34,20 +34,20 @@ export default async function AuditLogsPage() {
     if (status === 'SUCCESS') {
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
-          <CheckCircle className="w-3 h-3" /> SUCCESS
+          <CheckCircle className="w-3 h-3" /> BERHASIL
         </span>
       )
     }
     if (status === 'BLOCKED') {
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-red-500/15 border border-red-500/30 text-red-400">
-          <ShieldAlert className="w-3 h-3" /> BLOCKED
+          <ShieldAlert className="w-3 h-3" /> DIBLOKIR
         </span>
       )
     }
     return (
       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 border border-amber-500/30 text-amber-400">
-        <XCircle className="w-3 h-3" /> FAILED
+        <XCircle className="w-3 h-3" /> GAGAL
       </span>
     )
   }
@@ -55,8 +55,8 @@ export default async function AuditLogsPage() {
   return (
     <div className="min-h-screen bg-[#08090d] text-slate-100 pb-16">
       <Topbar
-        title="Security Audit Trail"
-        subtitle="Immutable Audit Logs (Pencatatan Aktivitas Keamanan Tidak Dapat Dimanipulasi)"
+        title="Jejak Audit Keamanan (Audit Trail)"
+        subtitle="Pencatatan Aktivitas Keamanan Tidak Dapat Dimanipulasi (NIST SP 800-61 Rev. 2)"
         user={session}
       />
 
@@ -80,13 +80,13 @@ export default async function AuditLogsPage() {
             <table className="w-full text-left text-xs">
               <thead>
                 <tr className="border-b border-white/[0.06] text-slate-400 font-mono text-[10px] uppercase bg-white/[0.01]">
-                  <th className="px-6 py-4">Timestamp</th>
-                  <th className="px-6 py-4">Tipe Aksi (Action)</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Pengguna (User)</th>
-                  <th className="px-6 py-4">Target Resource</th>
-                  <th className="px-6 py-4">IP Address</th>
-                  <th className="px-6 py-4">Detail Event</th>
+                  <th className="px-6 py-4">Waktu Kejadian</th>
+                  <th className="px-6 py-4">Tindakan Keamanan</th>
+                  <th className="px-6 py-4">Hasil (Status)</th>
+                  <th className="px-6 py-4">Personel Pelaksana</th>
+                  <th className="px-6 py-4">Sumber Daya Sasaran</th>
+                  <th className="px-6 py-4">Alamat IP Asal</th>
+                  <th className="px-6 py-4">Rincian Peristiwa</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.04]">

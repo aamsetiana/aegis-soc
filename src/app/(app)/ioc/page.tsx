@@ -2,9 +2,19 @@ import { getSession } from '@/lib/security/session'
 import { prisma } from '@/lib/db'
 import { getOrSetCache } from '@/lib/cache'
 import { Topbar } from '@/components/layout/topbar'
-import { getSeverityColor, formatDate } from '@/lib/utils'
+import { getSeverityColor, getSeverityLabel, formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import { Radar, ExternalLink, ShieldAlert, Download } from 'lucide-react'
+
+const iocTypeLabels: Record<string, string> = {
+  IP_ADDRESS: 'Alamat IP',
+  DOMAIN: 'Nama Domain',
+  URL: 'Tautan URL',
+  MD5_HASH: 'Hash MD5',
+  SHA256_HASH: 'Hash SHA-256',
+  EMAIL: 'Alamat Email',
+  FILE_NAME: 'Nama Berkas',
+}
 
 export default async function IOCTrackerPage() {
   const session = await getSession()
@@ -92,7 +102,7 @@ export default async function IOCTrackerPage() {
                     <tr key={ioc.id} className="hover:bg-white/[0.02] transition-colors">
                       <td className="px-6 py-4">
                         <span className="font-mono text-[11px] px-2.5 py-1 rounded-md bg-white/[0.04] border border-white/[0.06] text-slate-300 font-semibold">
-                          {ioc.type}
+                          {iocTypeLabels[ioc.type] || ioc.type}
                         </span>
                       </td>
                       <td className="px-6 py-4 font-mono font-bold text-red-400 break-all max-w-md">
@@ -104,7 +114,7 @@ export default async function IOCTrackerPage() {
                             ioc.threatLevel
                           )}`}
                         >
-                          {ioc.threatLevel}
+                          {getSeverityLabel(ioc.threatLevel)}
                         </span>
                       </td>
                       <td className="px-6 py-4">

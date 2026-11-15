@@ -29,6 +29,14 @@ import {
 } from '@/lib/utils'
 
 const statusOptions = ['NEW', 'TRIAGED', 'CONTAINED', 'ERADICATED', 'CLOSED']
+const statusLabels: Record<string, string> = {
+  NEW: 'Baru (New)',
+  TRIAGED: 'Ditelaah (Triaged)',
+  CONTAINED: 'Terkendali (Contained)',
+  ERADICATED: 'Dibasmi (Eradicated)',
+  CLOSED: 'Selesai (Closed)',
+}
+
 const iocTypes = [
   'IP_ADDRESS',
   'DOMAIN',
@@ -39,13 +47,13 @@ const iocTypes = [
   'FILE_NAME',
 ]
 const iocTypeLabels: Record<string, string> = {
-  IP_ADDRESS: 'IP Address',
-  DOMAIN: 'Domain',
-  URL: 'URL',
-  MD5_HASH: 'MD5 Hash',
-  SHA256_HASH: 'SHA-256 Hash',
-  EMAIL: 'Email Address',
-  FILE_NAME: 'File Name',
+  IP_ADDRESS: 'Alamat IP',
+  DOMAIN: 'Nama Domain',
+  URL: 'Tautan URL',
+  MD5_HASH: 'Hash MD5',
+  SHA256_HASH: 'Hash SHA-256',
+  EMAIL: 'Alamat Email',
+  FILE_NAME: 'Nama Berkas',
 }
 
 export function CaseDossierClient({
@@ -215,13 +223,13 @@ export function CaseDossierClient({
 
   const tabs = [
     { id: 'overview', label: 'Ringkasan Kasus', icon: Eye },
-    { id: 'ioc', label: `IOC Threat Intel (${incident.iocs.length})`, icon: AlertTriangle },
-    { id: 'evidence', label: `Evidence Vault (${incident.evidence.length})`, icon: Database },
+    { id: 'ioc', label: `Indikator Ancaman (IOC) (${incident.iocs.length})`, icon: AlertTriangle },
+    { id: 'evidence', label: `Gudang Bukti Forensik (${incident.evidence.length})`, icon: Database },
     {
       id: 'tasks',
-      label: `Containment Checklist (${
+      label: `Tugas Penanganan (${
         incident.containmentTasks.filter((t: any) => !t.isCompleted).length
-      } pending)`,
+      } aktif)`,
       icon: CheckCircle,
     },
   ]
@@ -284,7 +292,7 @@ export function CaseDossierClient({
               >
                 {statusOptions.map((s) => (
                   <option key={s} value={s}>
-                    {s}
+                    {statusLabels[s] || s}
                   </option>
                 ))}
               </select>

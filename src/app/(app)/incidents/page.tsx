@@ -7,6 +7,8 @@ import {
   getTLPColor,
   getStatusColor,
   getCategoryLabel,
+  getStatusLabel,
+  getSeverityLabel,
   formatDate,
 } from '@/lib/utils'
 import Link from 'next/link'
@@ -71,11 +73,20 @@ export default async function IncidentsPage({
 
   const canCreate = ['COMMANDER', 'RESPONDER', 'ANALYST'].includes(session.role)
 
+  const statusTabs: { key: string; label: string }[] = [
+    { key: 'ALL', label: 'Semua Status' },
+    { key: 'NEW', label: 'Baru' },
+    { key: 'TRIAGED', label: 'Ditelaah' },
+    { key: 'CONTAINED', label: 'Terkendali' },
+    { key: 'ERADICATED', label: 'Dibasmi' },
+    { key: 'CLOSED', label: 'Selesai' },
+  ]
+
   return (
     <div className="min-h-screen bg-[#08090d] text-slate-100 pb-12">
       <Topbar
-        title="Incident Cases"
-        subtitle={`Total ${incidents.length} kasus insiden aktif`}
+        title="Daftar Kasus Insiden Keamanan"
+        subtitle={`Total ${incidents.length} kasus insiden terdaftar di sistem`}
         user={session}
         actionButton={{ label: 'Laporkan Insiden', href: '/incidents/new' }}
       />
@@ -84,21 +95,19 @@ export default async function IncidentsPage({
         {/* Actions & Filters */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            {(['ALL', 'NEW', 'TRIAGED', 'CONTAINED', 'ERADICATED', 'CLOSED'] as const).map(
-              (s) => (
-                <Link
-                  key={s}
-                  href={s === 'ALL' ? '/incidents' : `/incidents?status=${s}`}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all border ${
-                    (!status && s === 'ALL') || status === s
-                      ? 'bg-red-500/15 border-red-500/30 text-red-400 font-semibold'
-                      : 'border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.04]'
-                  }`}
-                >
-                  {s}
-                </Link>
-              )
-            )}
+            {statusTabs.map((s) => (
+              <Link
+                key={s.key}
+                href={s.key === 'ALL' ? '/incidents' : `/incidents?status=${s.key}`}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all border ${
+                  (!status && s.key === 'ALL') || status === s.key
+                    ? 'bg-red-500/15 border-red-500/30 text-red-400 font-semibold'
+                    : 'border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.04]'
+                }`}
+              >
+                {s.label}
+              </Link>
+            ))}
           </div>
 
           <div className="flex items-center gap-3">
@@ -119,15 +128,15 @@ export default async function IncidentsPage({
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/[0.06] text-slate-400 font-mono text-[11px] uppercase tracking-wider bg-white/[0.01]">
-                  <th className="px-6 py-4">Case #</th>
-                  <th className="px-6 py-4">Judul Insiden</th>
-                  <th className="px-6 py-4">Kategori Serangan</th>
-                  <th className="px-6 py-4">Severity</th>
-                  <th className="px-6 py-4">TLP</th>
+                  <th className="px-6 py-4">No. Kasus</th>
+                  <th className="px-6 py-4">Judul Kasus & Sistem</th>
+                  <th className="px-6 py-4">Kategori Ancaman</th>
+                  <th className="px-6 py-4">Tingkat Keparahan</th>
+                  <th className="px-6 py-4">Klasifikasi TLP</th>
                   <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">IOC / Bukti</th>
-                  <th className="px-6 py-4">Investigator</th>
-                  <th className="px-6 py-4">Waktu Didaftarkan</th>
+                  <th className="px-6 py-4">Artefak / IOC</th>
+                  <th className="px-6 py-4">Petugas Investigasi</th>
+                  <th className="px-6 py-4">Waktu Registrasi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.04] text-xs">
@@ -176,7 +185,7 @@ export default async function IncidentsPage({
                             inc.severity
                           )}`}
                         >
-                          {inc.severity}
+                          {getSeverityLabel(inc.severity)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
@@ -194,7 +203,7 @@ export default async function IncidentsPage({
                             inc.status
                           )}`}
                         >
-                          {inc.status}
+                          {getStatusLabel(inc.status)}
                         </span>
                       </td>
                       <td className="px-6 py-4 font-mono text-slate-400 text-[11px]">
@@ -203,7 +212,7 @@ export default async function IncidentsPage({
                       </td>
                       <td className="px-6 py-4 text-slate-300">
                         {inc.assignedTo?.name || (
-                          <span className="text-slate-500 italic">Unassigned</span>
+                          <span className="text-slate-500 italic">Belum Ditugaskan</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-slate-500 text-[11px] font-mono">

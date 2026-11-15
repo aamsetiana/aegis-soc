@@ -15,17 +15,17 @@ import {
   ChevronRight,
   Database,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, getRoleLabel } from '@/lib/utils'
 import { SessionPayload } from '@/lib/security/session'
 
 const navItems = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Incidents', href: '/incidents', icon: AlertTriangle },
-  { label: 'IOC Tracker', href: '/ioc', icon: Radar },
-  { label: 'Reports', href: '/reports', icon: FileText, divider: true },
-  { label: 'Audit Logs', href: '/audit-logs', icon: Activity },
-  { label: 'Team & RBAC', href: '/team', icon: Users, divider: true },
-  { label: 'System Security', href: '/security', icon: Settings },
+  { label: 'Dasbor Utama', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Insiden Keamanan', href: '/incidents', icon: AlertTriangle },
+  { label: 'Pelacak Ancaman (IOC)', href: '/ioc', icon: Radar },
+  { label: 'Laporan Eksekutif', href: '/reports', icon: FileText, divider: true },
+  { label: 'Jejak Audit (Logs)', href: '/audit-logs', icon: Activity },
+  { label: 'Tim & Hak Akses (RBAC)', href: '/team', icon: Users, divider: true },
+  { label: 'Kepatuhan Keamanan', href: '/security', icon: Settings },
 ]
 
 interface SidebarProps {
@@ -64,7 +64,7 @@ export function Sidebar({ user }: SidebarProps) {
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             </div>
             <div className="text-[10px] text-slate-400 font-mono tracking-wider uppercase">
-              Incident Response
+              Tanggap Insiden Siber
             </div>
           </div>
         </Link>

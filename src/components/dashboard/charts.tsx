@@ -26,11 +26,11 @@ const breakdownData = [
 
 // Alert Volume grouped bars
 const alertVolumeData = [
-  { day: 'Mon', critical: 12, high: 24, badge: '+12%' },
-  { day: 'Tue', critical: 18, high: 32, badge: '+45%' },
-  { day: 'Wed', critical: 25, high: 45, badge: '+20%' },
-  { day: 'Thu', critical: 15, high: 28, badge: '+8%' },
-  { day: 'Fri', critical: 22, high: 38, badge: '+30%' },
+  { day: 'Sen', critical: 12, high: 24, badge: '+12%' },
+  { day: 'Sel', critical: 18, high: 32, badge: '+45%' },
+  { day: 'Rab', critical: 25, high: 45, badge: '+20%' },
+  { day: 'Kam', critical: 15, high: 28, badge: '+8%' },
+  { day: 'Jum', critical: 22, high: 38, badge: '+30%' },
 ]
 
 // Operations dense timeline
@@ -54,7 +54,7 @@ export function DashboardCharts({
         <div className="bg-[#11131a] border border-white/[0.06] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-sm font-semibold text-white">Breakdown</h3>
+              <h3 className="text-sm font-semibold text-white">Analisis Lalu Lintas (Breakdown)</h3>
               <p className="text-[11px] text-slate-400">Trafik deteksi masuk vs tertahan</p>
             </div>
             <div className="flex items-center gap-2">
@@ -83,6 +83,7 @@ export function DashboardCharts({
                 <XAxis dataKey="time" tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
                 <Tooltip
+                  formatter={(val: any, name: any) => [val, name === 'inbound' ? 'Deteksi Masuk' : 'Dicegah / Filter']}
                   contentStyle={{
                     backgroundColor: '#0d0f14',
                     border: '1px solid rgba(255,255,255,0.1)',
@@ -90,8 +91,8 @@ export function DashboardCharts({
                     fontSize: '11px',
                   }}
                 />
-                <Area type="monotone" dataKey="inbound" stroke="#f97316" strokeWidth={2.5} fillOpacity={1} fill="url(#glowOrange)" />
-                <Area type="monotone" dataKey="outbound" stroke="#8b5cf6" strokeWidth={2.5} fillOpacity={1} fill="url(#glowPurple)" />
+                <Area type="monotone" dataKey="inbound" stroke="#f97316" strokeWidth={2.5} fillOpacity={1} fill="url(#glowOrange)" name="Deteksi Masuk" />
+                <Area type="monotone" dataKey="outbound" stroke="#8b5cf6" strokeWidth={2.5} fillOpacity={1} fill="url(#glowPurple)" name="Dicegah / Filter" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -101,8 +102,8 @@ export function DashboardCharts({
         <div className="bg-[#11131a] border border-white/[0.06] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-sm font-semibold text-white">Alert Volume</h3>
-              <p className="text-[11px] text-slate-400">Volume ancaman mingguan (Critical & High)</p>
+              <h3 className="text-sm font-semibold text-white">Volume Ancaman (Alert Volume)</h3>
+              <p className="text-[11px] text-slate-400">Volume ancaman mingguan (Kritis & Tinggi)</p>
             </div>
             <button className="text-slate-500 hover:text-slate-300">
               <MoreVertical className="w-4 h-4" />
@@ -133,8 +134,8 @@ export function DashboardCharts({
         <div className="bg-[#11131a] border border-white/[0.06] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-white">Firewall Activity</h3>
-              <p className="text-[11px] text-slate-400 font-mono">14,325 rule checks/sec</p>
+              <h3 className="text-sm font-semibold text-white">Aktivitas Firewall (Firewall Activity)</h3>
+              <p className="text-[11px] text-slate-400 font-mono">14,325 pemeriksaan aturan/detik</p>
             </div>
             <button className="text-slate-500 hover:text-slate-300">
               <MoreVertical className="w-4 h-4" />
@@ -174,7 +175,7 @@ export function DashboardCharts({
 
               <div className="absolute bottom-0 flex flex-col items-center">
                 <span className="text-3xl font-extrabold text-white tracking-tight">21%</span>
-                <span className="text-[10px] text-slate-400 font-mono">LOAD LEVEL</span>
+                <span className="text-[10px] text-slate-400 font-mono uppercase">Beban Aktif</span>
               </div>
             </div>
 

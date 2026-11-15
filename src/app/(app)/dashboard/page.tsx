@@ -134,38 +134,38 @@ export default async function DashboardPage() {
 
   const data = await getDashboardData()
 
-  // 5 Top Metric Cards matching UI Reference
+  // 5 Top Metric Cards matching UI Reference in Indonesian
   const metricCards = [
     {
-      label: 'Firewall Events',
+      label: 'Aktivitas Firewall',
       value: '12,480',
       change: '+14%',
       icon: Flame,
       color: 'text-orange-400',
     },
     {
-      label: 'Malware Detected',
+      label: 'Malware Terdeteksi',
       value: '1,932',
       change: '0%',
       icon: Bug,
       color: 'text-red-400',
     },
     {
-      label: 'System Health',
+      label: 'Kesehatan Sistem',
       value: '98.7%',
-      change: 'Stable',
+      change: 'Stabil',
       icon: Activity,
       color: 'text-emerald-400',
     },
     {
-      label: 'Active Sessions',
+      label: 'Sesi Aktif',
       value: '7,654',
       change: '+22%',
       icon: Users,
       color: 'text-blue-400',
     },
     {
-      label: 'Blocked IPs',
+      label: 'IP Diblokir',
       value: '3,281',
       change: '+31%',
       icon: ShieldCheck,
@@ -177,10 +177,10 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-[#08090d] text-slate-100 pb-12">
       {/* Top Bar */}
       <Topbar
-        title="Dashboard"
-        subtitle={`Welcome back, ${session.name}`}
+        title="Dasbor Operasional SOC"
+        subtitle={`Selamat datang kembali, ${session.name}`}
         user={session}
-        actionButton={{ label: 'Check Alerts', href: '/incidents/new' }}
+        actionButton={{ label: 'Periksa Peringatan', href: '/incidents/new' }}
       />
 
       <div className="p-8 space-y-6 max-w-[1600px] mx-auto">
@@ -188,7 +188,7 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-extrabold text-white tracking-tight">
-              Hello, {session.name}
+              Halo, {session.name}
             </h2>
             <p className="text-xs text-slate-400 mt-1">
               Platform AegisSOC aktif • Standar NIST SP 800-61 Rev. 2 • GitHub: aamsetiana
@@ -207,7 +207,7 @@ export default async function DashboardPage() {
               className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-xs font-semibold text-white shadow-lg shadow-red-600/25 transition-all flex items-center gap-2"
             >
               <ShieldAlert className="w-4 h-4" />
-              Check Alerts
+              Periksa Peringatan
             </Link>
           </div>
         </div>
@@ -252,12 +252,12 @@ export default async function DashboardPage() {
             <div className="p-5 border-b border-white/[0.06] flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-                  Alert Queue
+                  Antrean Peringatan (Alert Queue)
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-500/15 border border-red-500/30 text-red-400">
-                    Week
+                    Minggu Ini
                   </span>
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">Total Alerts (Today)</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Total Peringatan Masuk (Hari Ini)</p>
               </div>
 
               <Link
@@ -272,10 +272,10 @@ export default async function DashboardPage() {
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-white/[0.06] text-slate-400 font-mono text-[10px] uppercase bg-white/[0.01]">
-                    <th className="px-5 py-3">Time</th>
-                    <th className="px-5 py-3">Alert ID</th>
-                    <th className="px-5 py-3">Severity</th>
-                    <th className="px-5 py-3">Risk Lvl</th>
+                    <th className="px-5 py-3">Waktu (UTC)</th>
+                    <th className="px-5 py-3">ID Kasus</th>
+                    <th className="px-5 py-3">Judul / Sistem Terdampak</th>
+                    <th className="px-5 py-3">Tingkat Risiko</th>
                     <th className="px-5 py-3 text-right">Status</th>
                   </tr>
                 </thead>
@@ -287,7 +287,7 @@ export default async function DashboardPage() {
                     >
                       <td className="px-5 py-3.5 font-mono text-slate-400 text-[11px]">
                         {inc.time ||
-                          new Date(inc.createdAt).toLocaleTimeString('en-US', {
+                          new Date(inc.createdAt).toLocaleTimeString('id-ID', {
                             hour: '2-digit',
                             minute: '2-digit',
                             timeZone: 'UTC',
@@ -326,7 +326,13 @@ export default async function DashboardPage() {
                             }`}
                           />
                           <span className="text-[10px] font-mono text-slate-400 ml-1.5">
-                            {inc.severity}
+                            {inc.severity === 'CRITICAL'
+                              ? 'Kritis'
+                              : inc.severity === 'HIGH'
+                              ? 'Tinggi'
+                              : inc.severity === 'MEDIUM'
+                              ? 'Sedang'
+                              : 'Rendah'}
                           </span>
                         </div>
                       </td>
@@ -350,30 +356,30 @@ export default async function DashboardPage() {
           <div className="bg-[#11131a] border border-white/[0.06] rounded-2xl p-5 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-1">
-                <h3 className="text-sm font-semibold text-white">Operations</h3>
+                <h3 className="text-sm font-semibold text-white">Kinerja Operasional SOC</h3>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white/[0.04] text-slate-400">
                   (56%)
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">System throughput & remediation</p>
+              <p className="text-[11px] text-slate-400">Efisiensi remediasi & penanganan insiden</p>
 
               <div className="mt-6 flex items-baseline gap-2">
                 <span className="text-4xl font-black text-white">56%</span>
-                <span className="text-xs text-orange-400 font-mono">+12.4% vs last week</span>
+                <span className="text-xs text-orange-400 font-mono">+12.4% vs minggu lalu</span>
               </div>
 
               <div className="mt-5 space-y-3">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-400">MTTD (Mean Time to Detect)</span>
-                  <span className="font-mono text-white">14 mins</span>
+                  <span className="text-slate-400">MTTD (Rata-rata Waktu Deteksi)</span>
+                  <span className="font-mono text-white">14 menit</span>
                 </div>
                 <div className="w-full bg-white/[0.05] rounded-full h-1.5 overflow-hidden">
                   <div className="bg-gradient-to-r from-red-500 to-orange-500 h-1.5 rounded-full w-[70%]" />
                 </div>
 
                 <div className="flex justify-between text-xs pt-1">
-                  <span className="text-slate-400">MTTR (Mean Time to Respond)</span>
-                  <span className="font-mono text-white">42 mins</span>
+                  <span className="text-slate-400">MTTR (Rata-rata Waktu Respons)</span>
+                  <span className="font-mono text-white">42 menit</span>
                 </div>
                 <div className="w-full bg-white/[0.05] rounded-full h-1.5 overflow-hidden">
                   <div className="bg-gradient-to-r from-orange-500 to-emerald-500 h-1.5 rounded-full w-[45%]" />
@@ -387,7 +393,7 @@ export default async function DashboardPage() {
                 className="w-full py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-medium text-slate-200 transition-all flex items-center justify-center gap-2"
               >
                 <Activity className="w-3.5 h-3.5 text-red-400" />
-                Live Security Audit Log
+                Lihat Log Jejak Audit Real-Time
               </Link>
             </div>
           </div>

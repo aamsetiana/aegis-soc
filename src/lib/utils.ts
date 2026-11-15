@@ -56,26 +56,56 @@ export function getStatusColor(status: IncidentStatus): string {
 
 export function getCategoryLabel(category: IncidentCategory): string {
   const map: Record<IncidentCategory, string> = {
-    PHISHING: 'Phishing Campaign',
-    MALWARE: 'Malware Infection',
-    RANSOMWARE: 'Ransomware Attack',
-    UNAUTHORIZED_ACCESS: 'Unauthorized Access',
-    DDOS: 'DDoS Attack',
-    DATA_LEAK: 'Data Leak / Exfiltration',
-    INSIDER_THREAT: 'Insider Threat',
-    OTHER: 'Other Security Event',
+    PHISHING: 'Serangan Phishing',
+    MALWARE: 'Infeksi Malware',
+    RANSOMWARE: 'Serangan Ransomware',
+    UNAUTHORIZED_ACCESS: 'Akses Tanpa Izin',
+    DDOS: 'Serangan DDoS',
+    DATA_LEAK: 'Kebocoran Data',
+    INSIDER_THREAT: 'Ancaman Orang Dalam',
+    OTHER: 'Insiden Keamanan Lainnya',
   }
   return map[category] || category
 }
 
+export function getStatusLabel(status: IncidentStatus): string {
+  const map: Record<IncidentStatus, string> = {
+    NEW: 'Baru',
+    TRIAGED: 'Ditelaah',
+    CONTAINED: 'Terkendali',
+    ERADICATED: 'Dibasmi',
+    CLOSED: 'Selesai',
+  }
+  return map[status] || status
+}
+
+export function getSeverityLabel(severity: Severity): string {
+  const map: Record<Severity, string> = {
+    CRITICAL: 'Kritis',
+    HIGH: 'Tinggi',
+    MEDIUM: 'Sedang',
+    LOW: 'Rendah',
+  }
+  return map[severity] || severity
+}
+
+export function getRoleLabel(role: string): string {
+  const map: Record<string, string> = {
+    COMMANDER: 'Komandan Insiden (Admin)',
+    RESPONDER: 'Petugas Respons Forensik',
+    ANALYST: 'Analis Keamanan SOC',
+  }
+  return map[role] || role
+}
+
 export function calculateMTTR(detectedAt: Date | string, closedAt: Date | string | null): string {
-  if (!closedAt) return 'Ongoing'
+  if (!closedAt) return 'Sedang Ditangani'
   const diffMs = new Date(closedAt).getTime() - new Date(detectedAt).getTime()
   const diffHrs = Math.floor(diffMs / (1000 * 60 * 60))
   const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60))
   if (diffHrs > 24) {
     const days = Math.floor(diffHrs / 24)
-    return `${days}d ${diffHrs % 24}h`
+    return `${days} hari ${diffHrs % 24} jam`
   }
-  return `${diffHrs}h ${diffMins}m`
+  return `${diffHrs} jam ${diffMins} mnt`
 }

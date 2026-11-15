@@ -95,8 +95,8 @@ export default async function SecurityPage() {
   return (
     <div className="min-h-screen bg-[#08090d] text-slate-100 pb-16">
       <Topbar
-        title="Security Architecture & Self-Testing"
-        subtitle="Dokumentasi Kontrol Keamanan Siber, OWASP Top 10 Mitigation, & Skenario Uji Mandiri"
+        title="Arsitektur Keamanan & Pengujian Mandiri"
+        subtitle="Dokumentasi Kontrol Keamanan Siber, Mitigasi OWASP Top 10, & Skenario Uji Mandiri"
         user={session}
       />
 

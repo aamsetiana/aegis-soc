@@ -48,7 +48,7 @@ export function Topbar({ title, subtitle, user, actionButton }: TopbarProps) {
             className="px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.1] text-slate-200 hover:text-white text-xs font-medium transition-all flex items-center gap-1.5"
           >
             <ShieldAlert className="w-3.5 h-3.5 text-red-400" />
-            Check Alerts
+            Periksa Peringatan
           </Link>
         )}
 
