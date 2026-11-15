@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  COMMANDER
+  RESPONDER
+  ANALYST
+}
+
+enum Severity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum TLP {
+  RED
+  AMBER
+  GREEN
+  WHITE
+}
+
+enum IncidentStatus {
+  NEW
+  TRIAGED
+  CONTAINED
+  ERADICATED
+  CLOSED
+}
+
+enum IncidentCategory {
+  PHISHING
+  MALWARE
+  RANSOMWARE
+  UNAUTHORIZED_ACCESS
+  DDOS
+  DATA_LEAK
+  INSIDER_THREAT
+  OTHER
+}
+
+enum IOCType {
+  IP_ADDRESS
+  DOMAIN
+  URL
+  MD5_HASH
+  SHA256_HASH
+  EMAIL
+  FILE_NAME
+}
+
+enum AuditAction {
+  LOGIN_SUCCESS
+  LOGIN_FAILED
+  LOGOUT
+  REGISTER
+  INCIDENT_CREATED
+  INCIDENT_UPDATED
+  INCIDENT_DELETED
+  INCIDENT_STATUS_CHANGED
+  IOC_ADDED
+  IOC_DELETED
+  EVIDENCE_ADDED
+  TASK_COMPLETED
+  UNAUTHORIZED_ACCESS_ATTEMPT
+  RATE_LIMIT_TRIGGERED
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  REPORT_EXPORTED
+}
+
+enum AuditStatus {
+  SUCCESS
+  FAILED
+  BLOCKED
+}
+
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  role       Role     @default(ANALYST)
+  department String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  reportedIncidents  IncidentCase[]    @relation("ReportedBy")
+  assignedIncidents  IncidentCase[]    @relation("AssignedTo")
+  auditLogs          AuditLog[]
+  completedTasks     ContainmentTask[]
+  collectedEvidence  Evidence[]
+
+  @@map("users")
+}
+
+model IncidentCase {
+  id              String           @id @default(uuid())
+  caseNumber      String           @unique
+  title           String
+  description     String
+  category        IncidentCategory
+  severity        Severity
+  tlp             TLP              @default(AMBER)
+  status          IncidentStatus   @default(NEW)
+  affectedSystems String?
+  detectedAt      DateTime         @default(now())
+  containedAt     DateTime?
+  eradicatedAt    DateTime?
+  closedAt        DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  reportedById String
+  reportedBy   User   @relation("ReportedBy", fields: [reportedById], references: [id])
+
+  assignedToId String?
+  assignedTo   User?  @relation("AssignedTo", fields: [assignedToId], references: [id])
+
+  iocs             IOC[]
+  evidence         Evidence[]
+  containmentTasks ContainmentTask[]
+
+  @@map("incident_cases")
+}
+
+model IOC {
+  id          String   @id @default(uuid())
+  type        IOCType
+  value       String
+  threatLevel Severity @default(MEDIUM)
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  caseId String
+  case   IncidentCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  @@map("iocs")
+}
+
+model Evidence {
+  id           String   @id @default(uuid())
+  name         String
+  fileHash     String
+  fileType     String
+  fileSize     Int?
+  sourceDevice String
+  description  String?
+  createdAt    DateTime @default(now())
+
+  caseId String
+  case   IncidentCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  collectedById String
+  collectedBy   User   @relation(fields: [collectedById], references: [id])
+
+  @@map("evidence")
+}
+
+model ContainmentTask {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  caseId String
+  case   IncidentCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  completedById String?
+  completedBy   User?   @relation(fields: [completedById], references: [id])
+
+  @@map("containment_tasks")
+}
+
+model AuditLog {
+  id        String      @id @default(uuid())
+  action    AuditAction
+  resource  String?
+  status    AuditStatus @default(SUCCESS)
+  details   Json?
+  ipAddress String?
+  userAgent String?
+  timestamp DateTime    @default(now())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
